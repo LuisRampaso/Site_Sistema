@@ -102,7 +102,10 @@ def register_view(request):
             # messages.success(request, 'Registrado. Agora faça o login para começar!')
             # return redirect('login')
         else:
+            form.data = form.data.copy()  # Copia os dados do formulário
+            form.data['password'] = ''  # Limpa apenas o campo de senha
             add_form_errors_to_messages(request, form)
+            
 
     form = CustomUserCreationForm(user=request.user)
     return render(request, "accounts/register.html",{"form": form})
@@ -114,16 +117,22 @@ def logout_view(request):
 @login_required()
 def update_my_user(request):
     if request.method == 'POST':
-        form = UserChangeForm(request.POST, instance=request.user, user=request.user)
-        if form.is_valid():
-            form.save()
+        user_form = UserChangeForm(request.POST, instance=request.user, user=request.user)
+        profile_form = ProfileForm(request.POST, request.FILES, instance=request.user.perfil)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
             messages.success(request, 'Seu perfil foi atualizado com sucesso!')
-            return redirect('home')
+            return redirect('update-my-user')
         else:
-            add_form_errors_to_messages(request, form)
+            add_form_errors_to_messages(request, user_form)
+            add_form_errors_to_messages(request, profile_form)
     else:
-        form = UserChangeForm(instance=request.user, user=request.user)
-    return render(request, 'accounts/user_update.html', {'form': form})
+        user_form = UserChangeForm(instance=request.user, user=request.user)
+        profile_form = ProfileForm(instance=request.user.perfil, user=request.user)
+
+    return render(request, 'accounts/user_update.html', {'user_form': user_form, 'profile_form': profile_form})
 
 @login_required()
 @grupo_colaborador_required(['administrador','colaborador'])

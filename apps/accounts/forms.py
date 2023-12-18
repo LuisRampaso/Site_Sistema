@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 from accounts.models import MyUser
 import re
+from user_profile.forms import ProfileForm
 
 import random # escolha aleatoria
 import string # contem todas as letras do alfabeto, etc.
@@ -92,7 +93,7 @@ class UserChangeForm(forms.ModelForm):
             'email': 'E-mail',
             'first_name': 'Nome',
             'last_name': 'Sobrenome',
-            'is_active': 'Usúario Ativo?'
+            'is_active': 'Usúario Ativo ?'
         }
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None) # get the 'user' from kwargs dictionary
