@@ -22,7 +22,7 @@ def timeout_view(request):
     return render(request, 'accounts/timeout.html')
 
 # Login
-def login_view(request):
+def login_view(request):    
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -166,7 +166,7 @@ def update_user(request, username):
             
     else:
         form = UserChangeForm(instance=user, user=request.user)
-    return render(request, 'accounts/user_update.html', {'form': form})
+    return render(request, 'accounts/update_user.html', {'form': form})
 
 @login_required
 @grupo_colaborador_required(['administrador','colaborador'])
